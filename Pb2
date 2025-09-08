@@ -90,7 +90,10 @@ public:
     // Load from file
     void loadFromFile() {
         ifstream fin("gradebook.txt");
-        if (!fin) return;
+        if (!fin){
+            cout<<"Record not present";
+            return;
+        }
 
         cout << "Previous Records:\n";
         string line;
