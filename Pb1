@@ -1,0 +1,183 @@
+Got it 👍
+Here’s your C++ program formatted properly with consistent indentation and spacing:
+
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <stdexcept>
+using namespace std;
+
+// ---------------- Item Class ----------------
+class Item {
+public:
+    int itemID;
+    string itemName;
+    double price;
+    int stockQuantity;
+
+    Item(int id = 0, string name = "", double p = 0.0, int qty = 0) {
+        if (p < 0 || qty < 0)
+            throw invalid_argument("Price or Quantity cannot be negative!");
+        itemID = id;
+        itemName = name;
+        price = p;
+        stockQuantity = qty;
+    }
+};
+
+// ---------------- Purchased Item Struct ----------------
+struct PurchasedItem {
+    Item item;
+    int quantity;
+};
+
+// ---------------- Bill Class ----------------
+class Bill {
+private:
+    int billID;
+    string customerName;
+    vector<PurchasedItem> purchasedItems;
+
+public:
+    Bill(int id = 0, string name = "") {
+        billID = id;
+        customerName = name;
+    }
+
+    // Overload + operator to add item with quantity
+    Bill& operator+(pair<Item*, int> purchase) {
+        Item* it = purchase.first;
+        int qty = purchase.second;
+
+        if (qty <= 0)
+            throw invalid_argument("Quantity must be positive!");
+        if (qty > it->stockQuantity)
+            throw runtime_error("Not enough stock available!");
+
+        it->stockQuantity -= qty;
+
+        PurchasedItem pi{*it, qty};
+        purchasedItems.push_back(pi);
+
+        return *this;
+    }
+
+    // Overload << operator to display bill
+    friend ostream& operator<<(ostream &out, const Bill &b) {
+        if (b.purchasedItems.empty())
+            throw runtime_error("Bill cannot be empty!");
+
+        double total = 0;
+        out << "\n========== BILL ==========\n";
+        out << "Bill ID: " << b.billID << "\nCustomer: " << b.customerName << "\n";
+        out << "--------------------------\n";
+        out << "ID\tName\tPrice\tQty\tSubtotal\n";
+
+        for (auto &pi : b.purchasedItems) {
+            double sub = pi.item.price * pi.quantity;
+            out << pi.item.itemID << "\t" << pi.item.itemName << "\t"
+                << pi.item.price << "\t" << pi.quantity << "\t" << sub << "\n";
+            total += sub;
+        }
+
+        out << "--------------------------\n";
+        out << "Total Amount: " << total << "\n";
+        out << "==========================\n";
+        return out;
+    }
+
+    // Save bill to file
+    void saveToFile() {
+        ofstream fout("bills.txt", ios::app);
+        if (!fout) {
+            cerr << "Error opening file!\n";
+            return;
+        }
+
+        fout << "Bill ID: " << billID << ", Customer: " << customerName << "\n";
+        for (auto &pi : purchasedItems) {
+            fout << pi.item.itemID << " " << pi.item.itemName << " "
+                 << pi.item.price << " x " << pi.quantity << "\n";
+        }
+        fout << "---------------------\n";
+        fout.close();
+    }
+};
+
+// ---------------- Main Function ----------------
+int main() {
+    try {
+        // Load previous bills
+        ifstream fin("bills.txt");
+        if (fin) {
+            cout << "Previous Bills:\n";
+            string line;
+            while (getline(fin, line)) {
+                cout << line << endl;
+            }
+            cout << "====================\n";
+        }
+        fin.close();
+
+        // ===== Store setup by user =====
+        int n;
+        cout << "Enter number of items in store: ";
+        cin >> n;
+
+        vector<Item> store;
+        for (int i = 0; i < n; i++) {
+            int id, qty;
+            string name;
+            double price;
+            cout << "Enter ItemID, Name, Price, Quantity: ";
+            cin >> id >> name >> price >> qty;
+            store.push_back(Item(id, name, price, qty));
+        }
+
+        // ===== Create Bill =====
+        int billId;
+        string custName;
+        cout << "\nEnter Bill ID: ";
+        cin >> billId;
+        cout << "Enter Customer Name: ";
+        cin >> custName;
+
+        Bill b1(billId, custName);
+
+        char choice = 'y';
+        while (choice == 'y' || choice == 'Y') {
+            int id, qty;
+            cout << "\nEnter ItemID to purchase: ";
+            cin >> id;
+            cout << "Enter Quantity: ";
+            cin >> qty;
+
+            // Find item in store
+            bool found = false;
+            for (auto &it : store) {
+                if (it.itemID == id) {
+                    b1 + make_pair(&it, qty);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) cout << "Item not found!\n";
+
+            cout << "Add more items? (y/n): ";
+            cin >> choice;
+        }
+
+        // ===== Display & Save =====
+        cout << b1;
+        b1.saveToFile();
+
+    } catch (exception &e) {
+        cerr << "Error: " << e.what() << endl;
+    }
+
+    return 0;
+}
+
+✨ This version is neat, consistently indented, and easy to read.
+Do you also want me to add comments step-by-step for better understanding (so you can directly explain it in viva/presentation)?
+
