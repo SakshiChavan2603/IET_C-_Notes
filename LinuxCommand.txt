@@ -1,0 +1,29 @@
+DATE: 03/09/2025
+
+1)pwd = it show the current location(path of the working directory)
+2)whoami = user of a respective directory
+3)ls = shows list of the directory and files in the current directory
+4)mkdir = to create the directory
+5)rmdir = to remove directory
+6)ls -lt -> with detail show the directory and files
+
+7)drwxr-xr-x 1 ietuser ietuser 512 Sep  4 11:39 Sakshi
+In this d says it is directory
+8)ls -ltr -> same like above but in reverse order 
+
+9)date ->date shows(like Thu Sep  4 11:51:53 PDT 2025)
+10)date +%D ->date shows
+11)date +%T ->time shows
+12)date +%H:%M -> hours and minutes shows
+
+File
+13)touch filename.extension
+
+14)nano abc.txt -> opens the new window that conatins abc.txt file
+clt +X to exit
+Y/N - to save or not
+
+15) cat abc.txt ->to read the file
+16) mv abc.txt ../destination/ to move into another directory form one
+
+
